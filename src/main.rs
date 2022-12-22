@@ -1,4 +1,3 @@
-use std::iter;
 use std::fs;
 use std::env;
 /// This function checks if a file exists at the given filepath.
@@ -17,13 +16,8 @@ use std::env;
 /// # Returns
 ///
 /// A boolean value indicating whether the file exists at the given filepath.
-fn file_exists(filepath:&String) -> bool {
-    let result = fs::metadata(filepath);
-    if result.is_ok() {
-        return true;
-    } else {
-        return false;
-    }
+fn file_exists(filepath:&str) -> bool {
+    fs::metadata(filepath).is_ok()
 }
 
 /// This function reads the contents of a file and returns the contents as a string.
@@ -46,10 +40,9 @@ fn file_exists(filepath:&String) -> bool {
 /// # Errors
 ///
 /// If the file cannot be opened or read, the function will panic with an error message.
-fn read_file(arg:&String) -> String {
-    let contents = fs::read_to_string(arg)
-        .expect("Error reading file");
-    return contents;
+fn read_file(arg:&str) -> String {
+    fs::read_to_string(arg)
+        .expect("Error reading file")
 }
 
 /// This function repeats a given string `n` times and returns the result as a new string.
@@ -70,7 +63,7 @@ fn read_file(arg:&String) -> String {
 ///
 /// A new string that is the repetition of the input string `n` times.
 fn repeat_string(s:&str, n:usize) -> String {
-    iter::repeat(s).take(n).collect()
+    s.repeat(n)
 }
 
 fn main() {
@@ -80,9 +73,12 @@ fn main() {
     args.remove(0);
     // loops over each arg and checks if its a file
     for (_, arg) in args.iter().enumerate() {
+        // Checks if the file exists
         if file_exists(arg) {
+            // prints CONTENTS OF <filename> and prints '-' as a border to seperate filename and file contents
             println!("CONTENTS OF {}\n{}",arg, repeat_string("-", arg.len()+12));
-            println!("{}\n", read_file(arg));
+            // actual file contents
+            println!("{}", read_file(arg));
         }
     }    
 }
