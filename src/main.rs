@@ -1,15 +1,28 @@
 use std::fs;
 use std::env;
+use std::fs::metadata;
 
-fn main() {
-    let args: Vec<String> = env::args().collect();
-    //let mut contents: String 
-    let mut contents: String = String::from("");
-    for (_, arg) in args.iter().enumerate() {
-        //println!("args {}: {}", i , arg)
-        contents = fs::read_to_string(arg)
-            .expect("Error reading file");
+fn file_exists(filepath:&String) -> bool {
+    let result = metadata(filepath);
+    if result.is_ok() {
+        return true;
+    } else {
+        return false;
     }
-    println!("file contains: {}", contents);
-
+}
+fn read_file(arg:&String) -> String {
+    let contents = fs::read_to_string(arg)
+        .expect("Error reading file");
+    return contents;
+}
+fn main() {
+    // Vector array for command line args
+    let mut args: Vec<String> = env::args().collect();
+    args.remove(0);
+    for (_, arg) in args.iter().enumerate() {
+        println!("{}",arg);
+        if file_exists(arg) {
+            println!("{}\n", read_file(arg));
+        }
+    }    
 }
